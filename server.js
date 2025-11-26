@@ -175,6 +175,25 @@ app.delete('/movies/:id', [authenticateToken, authorizeRole('admin')], async (re
   }
 });
 
+// === TEST DATABASE CONNECTION ===
+app.get('/test-db', async (req, res) => {
+  try {
+    const result = await db.query('SELECT NOW() as current_time');
+    res.json({ 
+      success: true, 
+      database: 'Connected to PostgreSQL',
+      time: result.rows[0].current_time 
+    });
+  } catch (err) {
+    console.error('Database Error:', err.message);
+    res.status(500).json({ 
+      success: false, 
+      error: err.message,
+      hint: 'Check DATABASE_URL in Vercel' 
+    });
+  }
+});
+
 // === DIRECTOR ROUTES (TUGAS PRAKTIKUM) ===
 // (Mahasiswa harus me-refactor endpoint /directors dengan pola yang sama)
 
